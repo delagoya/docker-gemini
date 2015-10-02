@@ -37,7 +37,10 @@ RUN apt-get -y update && \
   bedtools \
   python-yaml
 
-RUN pip install -U pip setuptools cython
+RUN pip install -U pip \
+  setuptools \
+  cython
+RUN pip install 'bcolz===0.10.0'
 
 # install Gemini
 RUN git clone https://github.com/arq5x/gemini.git &&\
@@ -45,15 +48,8 @@ RUN git clone https://github.com/arq5x/gemini.git &&\
   python setup.py install 
 
 # install gemini data WARNING!: this creates a FAT container
-RUN python gemini/install-data.py /usr/local/share/
-
-RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git &&\
-	cd s3fs-fuse &&\
-	./autogen.sh &&\
-	./configure &&\
-	make &&\
-	make install
-
+RUN   cd gemini &&\
+  python gemini/install-data.py /usr/local/share/
 
 # set gemini path
 ENV PATH $PATH:/usr/local/gemini/bin
